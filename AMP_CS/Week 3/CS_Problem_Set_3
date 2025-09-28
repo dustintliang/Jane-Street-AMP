@@ -1,0 +1,113 @@
+import itertools
+import math
+
+def palindronic_sums2(max: int) -> int:
+    numbers = set()
+    for i in range(1, int(math.sqrt(max)) + 1):
+        consec_square = i * i
+        n = 1
+        while consec_square + (i + n)**2 < max:
+            consec_square += (i + n)**2
+            consec_square_str = str(consec_square)
+            if consec_square_str == consec_square_str[ : : -1]:
+                numbers.add(consec_square)
+            n += 1
+    return sum(numbers)
+
+print(palindronic_sums2(10**8))
+
+def palindronic_sums(max: int) -> int:
+    numbers = set()
+    for i in range(1, int(math.sqrt(max)) + 1):
+        consec_square = i * i
+        for next_square in itertools.count(i + 1):
+            if consec_square + next_square**2 >= max:
+                break
+            consec_square += next_square**2
+            consec_square_str = str(consec_square)
+            if consec_square_str == consec_square_str[ : : -1]:
+                numbers.add(consec_square)
+    return sum(numbers)
+
+print(palindronic_sums(10**8))
+
+def quadratic_primes(a_max: int, b_max: int) -> int:
+    def is_prime_factor_fold(n: int) -> bool:
+        if n < 2:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        for i in range(3, int(math.sqrt(n)+1), 2):
+            if n % i == 0:
+                return False
+        return True
+    max_a = 0
+    max_b = 0
+    max_n = 0
+    for a in range(-a_max, a_max):
+        for b in range(-b_max, b_max + 1):
+            n = 0
+            while True:
+                prime_test = int(n**2 + a*n + b)
+                if is_prime_factor_fold(prime_test) == True:
+                    n += 1
+                else:
+                    break
+            if n > max_n:
+                max_n, max_a, max_b = n, a, b
+    return max_a*max_b
+
+print(quadratic_primes(1000, 1000))
+
+#doesn't work
+def anagramic_squares():
+    from words import get_words_list
+    import itertools
+    import math
+    list_of_words = get_words_list()
+    list_of_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    answer_set = set()
+    position = 0
+    greatest_square = 0
+    while position < len(list_of_words):
+        word = list_of_words[position]
+        list_of_letters = list(word)
+        for permutation in itertools.permutations(list_of_numbers, len(word)):
+            str_to_int_number = ''
+            if permutation[0] == 0:
+                continue
+            else:
+                for number in permutation:
+                    str_to_int_number += str(number)
+                str_to_int_number = int(str_to_int_number)
+                if str_to_int_number % math.sqrt(str_to_int_number) == 0:
+                    pos = 0
+                    list_of_letter_and_number = list()
+                    for letter in list_of_letters:
+                        list_of_letter_and_number.append((letter, permutation[pos]))
+                        pos += 1
+                    for permutation2 in itertools.permutations(list_of_letter_and_number, len(word)):
+                        str_to_int_number2 = ''
+                        word_for_number = ''
+                        if permutation2[0][1] == 0:
+                            continue
+                        else:
+                            for letter, number in permutation2:
+                                str_to_int_number2 += str(number)
+                                word_for_number += letter
+                            str_to_int_number2 = int(str_to_int_number2)
+                            if str_to_int_number2 % math.sqrt(str_to_int_number2) == 0 and word_for_number in list_of_words[position:]:
+                                if (word, word_for_number) not in answer_set and (word_for_number, word) not in answer_set:
+                                    square1 = math.sqrt(str_to_int_number)
+                                    square2 = math.sqrt(str_to_int_number2)
+                                    answer_set.add((word, word_for_number))
+                                    if square1 > greatest_square:
+                                        greatest_square = square1
+                                    if square2 > greatest_square:
+                                        greatest_square = square2
+        position += 1
+        print(position)
+    print(answer_set)
+    print(greatest_square)

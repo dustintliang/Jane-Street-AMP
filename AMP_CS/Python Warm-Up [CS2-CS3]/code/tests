@@ -1,0 +1,12 @@
+import math
+def is_prime_exhaustive_escape(n: int) -> bool:
+    '''Determines whether a given integer is prime
+    '''
+    ### BEGIN SOLUTION
+    if n == 2:
+        return True
+    for i in range(2, int(math.sqrt(n)+1)):
+        if n % i == 0:
+            return False
+        return True
+print(is_prime_exhaustive_escape(2))

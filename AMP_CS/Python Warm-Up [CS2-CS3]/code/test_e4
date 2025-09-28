@@ -1,0 +1,28 @@
+
+
+# PE #7: Find the 10001st Prime
+import math
+def is_prime_factor_fold(n: int) -> bool:
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(math.sqrt(n)+1), 2):
+        if n % i == 0:
+            return False
+    return True
+def find_nth_prime(n: int) -> int:
+    if n == 1:
+        return 2
+    term = 2
+    possible_prime = 3
+    while term <= n:
+        if is_prime_factor_fold(possible_prime) == True:
+            term += 1
+        possible_prime += 2
+    possible_prime -= 2
+    return possible_prime
+
+print(find_nth_prime(10001))
